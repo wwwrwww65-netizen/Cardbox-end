@@ -216,6 +216,8 @@ class MainActivity : ComponentActivity() {
                                     savedPhone = viewModel.getSavedPhone(),
                                     savedPassword = viewModel.getSavedPassword(),
                                     initialRememberMe = viewModel.isRememberMeEnabled(),
+                                    isPhonePendingOtp = { viewModel.isPhonePendingOtp(it) },
+                                    getPendingOtpData = { viewModel.getPendingOtpData() },
                                     onToggleThemeMode = { viewModel.toggleThemeMode() },
                                     onRegister = { ownerName, storeName, phone, location, password, remember, callback ->
                                         viewModel.registerAccount(ownerName, storeName, phone, location, password, remember) { success, msg, testOtp ->

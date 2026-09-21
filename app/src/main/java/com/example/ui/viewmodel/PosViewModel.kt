@@ -769,6 +769,38 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun setPendingOtpVerification(phone: String, storeName: String, location: String, pass: String) {
+        prefs.edit()
+            .putString("pending_otp_phone", phone.trim())
+            .putString("pending_otp_store_name", storeName.trim())
+            .putString("pending_otp_location", location.trim())
+            .putString("pending_otp_password", pass)
+            .apply()
+    }
+
+    fun isPhonePendingOtp(phone: String): Boolean {
+        val pending = prefs.getString("pending_otp_phone", "") ?: ""
+        return pending.isNotBlank() && pending == phone.trim()
+    }
+
+    fun getPendingOtpData(): Map<String, String> {
+        return mapOf(
+            "phone" to (prefs.getString("pending_otp_phone", "") ?: ""),
+            "storeName" to (prefs.getString("pending_otp_store_name", "") ?: ""),
+            "location" to (prefs.getString("pending_otp_location", "") ?: ""),
+            "password" to (prefs.getString("pending_otp_password", "") ?: "")
+        )
+    }
+
+    fun clearPendingOtpVerification() {
+        prefs.edit()
+            .remove("pending_otp_phone")
+            .remove("pending_otp_store_name")
+            .remove("pending_otp_location")
+            .remove("pending_otp_password")
+            .apply()
+    }
+
     fun registerAccount(
         ownerName: String,
         storeName: String,
@@ -782,6 +814,9 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             val res = repository.registerAccount(ownerName, storeName, phone, location, password)
             val testOtp = res.data ?: ""
+            if (res.success) {
+                setPendingOtpVerification(phone, storeName, location, password)
+            }
             onResult(res.success, res.message, testOtp)
             setToast(res.message)
         }
@@ -803,6 +838,7 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             val res = repository.verifyAccountOtp(phone, storeName, location, pass, otpCode)
             if (res.success && res.data != null) {
+                clearPendingOtpVerification()
                 setToast(res.message)
                 onResult(true, res.message)
                 // جلب ومزامنة كل البيانات فوراً بعد تفعيل الحساب

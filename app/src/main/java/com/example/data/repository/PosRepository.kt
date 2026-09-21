@@ -581,7 +581,7 @@ class PosRepository(
         val testOtpCode = apiRes.data ?: ""
         ApiResponse(
             success = true,
-            message = apiRes.message.ifBlank { "تم تسجيل الحساب في السيرفر بنجاح، يرجى إدخال رمز التحقق OTP (6 أرقام)" },
+            message = apiRes.message.ifBlank { "تم إنشاء الحساب وإرسال رمز التحقق OTP إلى هاتفك بنجاح" },
             data = testOtpCode
         )
     }
@@ -683,6 +683,7 @@ class PosRepository(
             db.walletDao().clearWalletAccount()
             db.walletDao().clearTransactions()
             db.notificationDao().clearAllNotifications()
+            walletPrefs?.edit()?.clear()?.apply()
             context?.let { ctx -> RetrofitClient.clearToken(ctx) }
         } catch (e: Exception) {
             // Ignore if already clean

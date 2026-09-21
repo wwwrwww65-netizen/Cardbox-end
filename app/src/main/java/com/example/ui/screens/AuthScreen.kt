@@ -85,6 +85,8 @@ fun AuthScreen(
     savedPhone: String = "",
     savedPassword: String = "",
     initialRememberMe: Boolean = false,
+    isPhonePendingOtp: (String) -> Boolean = { false },
+    getPendingOtpData: () -> Map<String, String> = { emptyMap() },
     onToggleThemeMode: () -> Unit = {},
     onRegister: (String, String, String, String, String, Boolean, (Boolean, String, String) -> Unit) -> Unit,
     onVerifyOtp: (String, String, String, String, String, (Boolean, String) -> Unit) -> Unit = { _, _, _, _, _, cb -> cb(true, "") },
@@ -123,6 +125,10 @@ fun AuthScreen(
 
     // OTP Screen state (Full screen mode)
     var isOtpScreenVisible by remember { mutableStateOf(false) }
+    var activeOtpPhone by remember { mutableStateOf("") }
+    var activeOtpStoreName by remember { mutableStateOf("") }
+    var activeOtpLocation by remember { mutableStateOf("") }
+    var activeOtpPassword by remember { mutableStateOf("") }
 
     // Forgot password states
     var showForgotPasswordModal by remember { mutableStateOf(false) }
@@ -131,14 +137,18 @@ fun AuthScreen(
     var isLoading by remember { mutableStateOf(false) }
 
     if (isOtpScreenVisible) {
-        val fullLocation = "$regSelectedGovernorate - $regStreetAddress".trim()
+        val targetPhone = activeOtpPhone.ifBlank { regPhone.trim() }
+        val targetStore = activeOtpStoreName.ifBlank { regStoreName.trim().ifBlank { "متجر $targetPhone" } }
+        val targetLocation = activeOtpLocation.ifBlank { "$regSelectedGovernorate - $regStreetAddress".trim().ifBlank { "المركز الرئيسي" } }
+        val targetPassword = activeOtpPassword.ifBlank { regPassword }
+
         OtpVerificationScreen(
-            phone = regPhone.trim(),
-            storeName = regStoreName.trim(),
-            location = fullLocation,
-            password = regPassword,
+            phone = targetPhone,
+            storeName = targetStore,
+            location = targetLocation,
+            password = targetPassword,
             onVerifyOtp = { otp, cb ->
-                onVerifyOtp(regPhone.trim(), regStoreName.trim(), fullLocation, regPassword, otp) { success, msg ->
+                onVerifyOtp(targetPhone, targetStore, targetLocation, targetPassword, otp) { success, msg ->
                     cb(success, msg)
                     if (success) {
                         isOtpScreenVisible = false
@@ -146,8 +156,7 @@ fun AuthScreen(
                 }
             },
             onResendOtp = { cb ->
-                val loc = "$regSelectedGovernorate - $regStreetAddress".trim()
-                onRegister(regOwnerName.trim(), regStoreName.trim(), regPhone.trim(), loc, regPassword, rememberMe) { success, msg, _ ->
+                onRequestForgotPasswordOtp(targetPhone) { success, msg, _ ->
                     cb(success, msg)
                 }
             },
@@ -647,6 +656,10 @@ fun AuthScreen(
                                     onRegister(regOwnerName.trim(), regStoreName.trim(), regPhone.trim(), fullLocation, regPassword, rememberMe) { success, msg, _ ->
                                         isLoading = false
                                         if (success) {
+                                            activeOtpPhone = regPhone.trim()
+                                            activeOtpStoreName = regStoreName.trim()
+                                            activeOtpLocation = fullLocation
+                                            activeOtpPassword = regPassword
                                             isOtpScreenVisible = true
                                             Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
                                         } else {
@@ -658,8 +671,19 @@ fun AuthScreen(
                                         errorMessage = "يرجى إدخال رقم الجوال وكلمة المرور"
                                         return@Button
                                     }
+                                    val trimmedLoginPhone = loginPhone.trim()
+                                    if (isPhonePendingOtp(trimmedLoginPhone)) {
+                                        val pendingData = getPendingOtpData()
+                                        activeOtpPhone = trimmedLoginPhone
+                                        activeOtpStoreName = pendingData["storeName"]?.ifBlank { "متجر $trimmedLoginPhone" } ?: "متجر $trimmedLoginPhone"
+                                        activeOtpLocation = pendingData["location"]?.ifBlank { "المركز الرئيسي" } ?: "المركز الرئيسي"
+                                        activeOtpPassword = loginPassword.ifBlank { pendingData["password"] ?: "" }
+                                        isOtpScreenVisible = true
+                                        Toast.makeText(context, "الحساب لم يتم تأكيده بعد، يرجى إدخال رمز التحقق OTP الذي تم إرساله لهاتفك", Toast.LENGTH_LONG).show()
+                                        return@Button
+                                    }
                                     isLoading = true
-                                    onLogin(loginPhone.trim(), loginPassword, rememberMe) { success, msg ->
+                                    onLogin(trimmedLoginPhone, loginPassword, rememberMe) { success, msg ->
                                         isLoading = false
                                         if (!success) errorMessage = msg
                                     }
