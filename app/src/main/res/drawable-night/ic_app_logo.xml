@@ -1,0 +1,120 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Red Card Outline (Neon Red) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF3366"
+        android:strokeWidth="3.5"
+        android:pathData="M70,25 L125,50 L95,100 L40,75 Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF3366"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:pathData="M95,40 C98,42 101,44 103,47 M92,44 C94,45 96,47 97,49 M89,47 A2,2 0 1,1 89,43" />
+
+    <!-- Blue Card Outline (Neon Blue) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00E5FF"
+        android:strokeWidth="3.5"
+        android:pathData="M85,38 L142,65 L112,112 L55,85 Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00E5FF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:pathData="M115,55 C118,57 121,59 123,62 M112,59 C114,60 116,62 117,64 M109,62 A2,2 0 1,1 109,58" />
+
+    <!-- Green Card Outline (Neon Green) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00FF88"
+        android:strokeWidth="3.5"
+        android:pathData="M98,52 L155,78 L125,125 L68,98 Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00FF88"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:pathData="M128,68 C131,70 134,72 136,75 M125,72 C127,73 129,75 130,77 M122,75 A2,2 0 1,1 122,71" />
+
+    <!-- Orange Card Outline (Neon Orange) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF9900"
+        android:strokeWidth="3.5"
+        android:pathData="M110,65 L168,92 L138,138 L80,111 Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF9900"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:pathData="M141,81 C144,83 147,85 149,88 M138,85 C140,86 142,88 143,90 M135,88 A2,2 0 1,1 135,84" />
+
+    <!-- Glowing Wi-Fi Arcs -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF9900"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:pathData="M75,92 A45,45 0 0,1 145,92" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00FF88"
+        android:strokeWidth="4.5"
+        android:strokeLineCap="round"
+        android:pathData="M85,102 A32,32 0 0,1 135,102" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00E5FF"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M93,111 A20,20 0 0,1 127,111" />
+    <path
+        android:fillColor="#00E5FF"
+        android:pathData="M110,122 A4,4 0 1,1 110,114 A4,4 0 1,1 110,122 Z" />
+
+    <!-- Neon Box Outlines -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00E5FF"
+        android:strokeWidth="3"
+        android:pathData="M52,108 L100,85 L120,96 L68,122 Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00E5FF"
+        android:strokeWidth="3"
+        android:pathData="M100,85 L152,108 L138,122 L82,96 Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00E5FF"
+        android:strokeWidth="3.5"
+        android:pathData="M52,122 L100,145 L100,185 L52,162 Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00E5FF"
+        android:strokeWidth="3.5"
+        android:pathData="M100,145 L148,122 L148,162 L100,185 Z" />
+
+    <!-- Yemeni Building Outline (Neon Gold/Orange Glow) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="2.5"
+        android:strokeLineJoin="round"
+        android:pathData="M108,172 L108,150 L115,147 L122,150 L122,143 L129,140 L136,143 L136,150 L142,147 L142,165" />
+    <path
+        android:fillColor="#FFB74D"
+        android:pathData="M113,155 H117 V160 H113 Z M127,148 H131 V153 H127 Z M127,156 H131 V161 H127 Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="2"
+        android:pathData="M123,165 A4,4 0 0,1 131,165 L123,165 Z" />
+
+</vector>

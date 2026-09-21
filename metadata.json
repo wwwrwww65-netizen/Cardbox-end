@@ -1,0 +1,6 @@
+{
+  "name": "Card Box Pos",
+  "description": "تطبيق Card Box Pos لنقاط البيع وبيع كروت الإنترنت والطباعة الحرارية",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
