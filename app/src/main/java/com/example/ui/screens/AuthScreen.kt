@@ -81,7 +81,7 @@ val YEMENI_GOVERNORATES = listOf(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthScreen(
-    themeMode: ThemeMode = ThemeMode.SYSTEM,
+    themeMode: ThemeMode = ThemeMode.DARK,
     savedPhone: String = "",
     savedPassword: String = "",
     initialRememberMe: Boolean = false,

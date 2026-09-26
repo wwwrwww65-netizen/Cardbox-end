@@ -30,8 +30,8 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _themeMode = MutableStateFlow(
         runCatching {
-            com.example.ui.theme.ThemeMode.valueOf(prefs.getString("theme_mode", com.example.ui.theme.ThemeMode.SYSTEM.name) ?: com.example.ui.theme.ThemeMode.SYSTEM.name)
-        }.getOrDefault(com.example.ui.theme.ThemeMode.SYSTEM)
+            com.example.ui.theme.ThemeMode.valueOf(prefs.getString("theme_mode", com.example.ui.theme.ThemeMode.DARK.name) ?: com.example.ui.theme.ThemeMode.DARK.name)
+        }.getOrDefault(com.example.ui.theme.ThemeMode.DARK)
     )
     val themeMode: StateFlow<com.example.ui.theme.ThemeMode> = _themeMode.asStateFlow()
 
@@ -42,9 +42,9 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
 
     fun toggleThemeMode() {
         val nextMode = when (_themeMode.value) {
-            com.example.ui.theme.ThemeMode.LIGHT -> com.example.ui.theme.ThemeMode.DARK
-            com.example.ui.theme.ThemeMode.DARK -> com.example.ui.theme.ThemeMode.SYSTEM
-            com.example.ui.theme.ThemeMode.SYSTEM -> com.example.ui.theme.ThemeMode.LIGHT
+            com.example.ui.theme.ThemeMode.DARK -> com.example.ui.theme.ThemeMode.LIGHT
+            com.example.ui.theme.ThemeMode.LIGHT -> com.example.ui.theme.ThemeMode.SYSTEM
+            com.example.ui.theme.ThemeMode.SYSTEM -> com.example.ui.theme.ThemeMode.DARK
         }
         setThemeMode(nextMode)
     }

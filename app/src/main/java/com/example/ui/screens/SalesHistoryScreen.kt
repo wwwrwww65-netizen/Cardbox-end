@@ -234,10 +234,10 @@ fun SalesHistoryScreen(
                         containerColor = MaterialTheme.colorScheme.surface
                     ),
                     border = androidx.compose.foundation.BorderStroke(
-                        1.dp,
+                        1.3.dp,
                         MaterialTheme.colorScheme.outlineVariant
                     ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(
@@ -752,10 +752,10 @@ fun ModernOrderCardItem(
         shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = androidx.compose.foundation.BorderStroke(
-            1.dp,
+            1.3.dp,
             MaterialTheme.colorScheme.outlineVariant
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
         modifier = Modifier
             .fillMaxWidth()
             .testTag("order_card_${order.id}")

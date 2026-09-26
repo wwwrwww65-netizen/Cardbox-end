@@ -66,9 +66,9 @@ fun ReceiptDialog(
                 .fillMaxWidth(0.90f)
                 .padding(vertical = 12.dp),
             shape = RoundedCornerShape(22.dp),
-            color = MaterialTheme.colorScheme.surface,
+            color = MaterialTheme.colorScheme.surfaceContainer,
             border = BorderStroke(
-                1.dp,
+                1.2.dp,
                 MaterialTheme.colorScheme.outlineVariant
             ),
             tonalElevation = 6.dp,
@@ -116,8 +116,8 @@ fun ReceiptDialog(
                 Surface(
                     shape = RoundedCornerShape(14.dp),
                     color = Color.White,
-                    border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
-                    shadowElevation = 4.dp,
+                    border = BorderStroke(1.2.dp, Color(0xFFCBD5E1)),
+                    shadowElevation = 6.dp,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(

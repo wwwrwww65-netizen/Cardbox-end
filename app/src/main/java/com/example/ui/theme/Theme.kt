@@ -46,13 +46,13 @@ private val DarkColorScheme = darkColorScheme(
     surfaceVariant = PosDarkSurfaceVariant,
     onSurfaceVariant = PosDarkTextSecondary,
     
-    surfaceContainerLowest = PosDarkBackground,
+    surfaceContainerLowest = PosDarkSurfaceContainerLowest,
     surfaceContainerLow = PosDarkSurfaceContainerLow,
     surfaceContainer = PosDarkSurfaceContainer,
     surfaceContainerHigh = PosDarkSurfaceContainerHigh,
-    surfaceContainerHighest = Color(0xFF32405D),
+    surfaceContainerHighest = PosDarkSurfaceContainerHighest,
     
-    surfaceBright = Color(0xFF1E293B),
+    surfaceBright = Color(0xFF223049),
     surfaceDim = PosDarkBackground,
     
     outline = PosDarkOutline,
@@ -92,14 +92,14 @@ private val LightColorScheme = lightColorScheme(
     surfaceVariant = PosSurfaceVariant,
     onSurfaceVariant = PosTextSecondary,
     
-    surfaceContainerLowest = Color.White,
+    surfaceContainerLowest = PosSurfaceContainerLowest,
     surfaceContainerLow = PosSurfaceContainerLow,
     surfaceContainer = PosSurfaceContainer,
     surfaceContainerHigh = PosSurfaceContainerHigh,
-    surfaceContainerHighest = Color(0xFFCBD5E1),
+    surfaceContainerHighest = PosSurfaceContainerHighest,
     
     surfaceBright = Color.White,
-    surfaceDim = Color(0xFFEDEAE6),
+    surfaceDim = Color(0xFFE2E8F0),
     
     outline = PosOutline,
     outlineVariant = PosOutlineVariant,
@@ -115,7 +115,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun MikroTikPosTheme(
-    themeMode: ThemeMode = ThemeMode.SYSTEM,
+    themeMode: ThemeMode = ThemeMode.DARK,
     darkTheme: Boolean = when (themeMode) {
         ThemeMode.SYSTEM -> isSystemInDarkTheme()
         ThemeMode.LIGHT -> false
@@ -161,9 +161,9 @@ fun MikroTikPosTheme(
 
 @Composable
 fun MyApplicationTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = true,
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
-) = MikroTikPosTheme(darkTheme = darkTheme, dynamicColor = dynamicColor, content = content)
+) = MikroTikPosTheme(themeMode = if (darkTheme) ThemeMode.DARK else ThemeMode.LIGHT, dynamicColor = dynamicColor, content = content)
 
 

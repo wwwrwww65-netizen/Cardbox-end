@@ -143,6 +143,22 @@ fun NetworksScreen(
             )
 
             // Filter Chips Row
+            val chipColors = FilterChipDefaults.filterChipColors(
+                selectedContainerColor = MaterialTheme.colorScheme.primary,
+                selectedLabelColor = Color.White,
+                selectedLeadingIconColor = Color.White,
+                containerColor = MaterialTheme.colorScheme.surface,
+                labelColor = MaterialTheme.colorScheme.onSurface
+            )
+            val chipBorder = FilterChipDefaults.filterChipBorder(
+                enabled = true,
+                selected = false,
+                borderColor = MaterialTheme.colorScheme.outlineVariant,
+                selectedBorderColor = MaterialTheme.colorScheme.primary,
+                borderWidth = 1.dp,
+                selectedBorderWidth = 1.5.dp
+            )
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -153,43 +169,51 @@ fun NetworksScreen(
                     selected = selectedFilter == 0,
                     onClick = { selectedFilter = 0 },
                     label = { Text("الكل (${displayList.size})", fontSize = 11.sp, fontWeight = FontWeight.Bold) },
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    colors = chipColors,
+                    border = chipBorder
                 )
                 FilterChip(
                     selected = selectedFilter == 1,
                     onClick = { selectedFilter = 1 },
                     label = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Outlined.CheckCircle, contentDescription = null, tint = PosEmeraldSuccess, modifier = Modifier.size(12.dp))
+                            Icon(Icons.Outlined.CheckCircle, contentDescription = null, tint = if (selectedFilter == 1) Color.White else PosEmeraldSuccess, modifier = Modifier.size(12.dp))
                             Spacer(modifier = Modifier.width(3.dp))
                             Text("المنضم إليها", fontSize = 11.sp, fontWeight = FontWeight.Bold)
                         }
                     },
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    colors = chipColors,
+                    border = chipBorder
                 )
                 FilterChip(
                     selected = selectedFilter == 2,
                     onClick = { selectedFilter = 2 },
                     label = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Outlined.HourglassEmpty, contentDescription = null, tint = PosAmberWarning, modifier = Modifier.size(12.dp))
+                            Icon(Icons.Outlined.HourglassEmpty, contentDescription = null, tint = if (selectedFilter == 2) Color.White else PosAmberWarning, modifier = Modifier.size(12.dp))
                             Spacer(modifier = Modifier.width(3.dp))
                             Text("قيد الانتظار", fontSize = 11.sp, fontWeight = FontWeight.Bold)
                         }
                     },
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    colors = chipColors,
+                    border = chipBorder
                 )
                 FilterChip(
                     selected = selectedFilter == 3,
                     onClick = { selectedFilter = 3 },
                     label = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Outlined.PushPin, contentDescription = null, modifier = Modifier.size(12.dp))
+                            Icon(Icons.Outlined.PushPin, contentDescription = null, tint = if (selectedFilter == 3) Color.White else Color(0xFFF59E0B), modifier = Modifier.size(12.dp))
                             Spacer(modifier = Modifier.width(3.dp))
                             Text("المثبتة", fontSize = 11.sp, fontWeight = FontWeight.Bold)
                         }
                     },
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    colors = chipColors,
+                    border = chipBorder
                 )
             }
 
@@ -240,11 +264,11 @@ fun NetworksScreen(
                                 containerColor = MaterialTheme.colorScheme.surface
                             ),
                             border = androidx.compose.foundation.BorderStroke(
-                                if (isPinned) 1.5.dp else 1.dp,
+                                if (isPinned) 2.dp else 1.3.dp,
                                 if (isPinned) MaterialTheme.colorScheme.primary
                                 else MaterialTheme.colorScheme.outlineVariant
                             ),
-                            elevation = CardDefaults.cardElevation(defaultElevation = if (isPinned) 4.dp else 2.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = if (isPinned) 5.dp else 3.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(20.dp))

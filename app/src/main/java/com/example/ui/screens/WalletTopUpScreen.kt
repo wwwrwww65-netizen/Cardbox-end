@@ -205,10 +205,10 @@ fun WalletTopUpSelectionScreen(
                         containerColor = MaterialTheme.colorScheme.surface
                     ),
                     border = BorderStroke(
-                        1.dp,
+                        1.3.dp,
                         MaterialTheme.colorScheme.outlineVariant
                     ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
                     onClick = { onSelectWallet(wallet.id) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -728,8 +728,8 @@ fun WalletTopUpFormScreen(
                                 // Important Verification Alert Box
                                 Surface(
                                     shape = RoundedCornerShape(14.dp),
-                                    color = Color(0xFFFFFBEB),
-                                    border = BorderStroke(1.dp, Color(0xFFF59E0B)),
+                                    color = PosAmberWarning.copy(alpha = 0.12f),
+                                    border = BorderStroke(1.dp, PosAmberWarning.copy(alpha = 0.5f)),
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Row(
@@ -740,7 +740,7 @@ fun WalletTopUpFormScreen(
                                         Icon(
                                             imageVector = Icons.Outlined.WarningAmber,
                                             contentDescription = null,
-                                            tint = Color(0xFFD97706),
+                                            tint = PosAmberWarning,
                                             modifier = Modifier.size(24.dp)
                                         )
                                         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -748,12 +748,12 @@ fun WalletTopUpFormScreen(
                                                 text = "تنبيه هام أثناء العملية:",
                                                 fontSize = 12.sp,
                                                 fontWeight = FontWeight.ExtraBold,
-                                                color = Color(0xFF92400E)
+                                                color = MaterialTheme.colorScheme.onSurface
                                             )
                                             Text(
                                                 text = "تأكد من ظهور اسم حساب النقطة باسم «${eWallet.accountHolderName}» قبل الضغط على تنفيذ في المحفظة.",
                                                 fontSize = 11.5.sp,
-                                                color = Color(0xFF78350F),
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                                 fontWeight = FontWeight.Medium,
                                                 lineHeight = 16.sp
                                             )

@@ -145,11 +145,11 @@ fun NetworkSearchScreen(
                     shape = RoundedCornerShape(20.dp),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                     border = BorderStroke(
-                        1.2.dp,
+                        1.3.dp,
                         if (searchQuery.isNotBlank()) MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
-                        else MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
+                        else MaterialTheme.colorScheme.outlineVariant
                     ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
                 ) {
                     Column(
                         modifier = Modifier.padding(14.dp),
@@ -376,11 +376,11 @@ fun ModernNetworkCard(
         shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = BorderStroke(
-            1.2.dp,
-            if (isPinned) MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-            else MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
+            if (isPinned) 2.dp else 1.3.dp,
+            if (isPinned) MaterialTheme.colorScheme.primary
+            else MaterialTheme.colorScheme.outlineVariant
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = if (isPinned) 3.dp else 1.5.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = if (isPinned) 5.dp else 3.dp),
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(22.dp))

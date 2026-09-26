@@ -99,10 +99,10 @@ fun PosBottomBar(
         // Base Navigation Surface Bar
         Surface(
             color = MaterialTheme.colorScheme.surface,
-            tonalElevation = 4.dp,
-            shadowElevation = 6.dp,
+            tonalElevation = 6.dp,
+            shadowElevation = 8.dp,
             border = androidx.compose.foundation.BorderStroke(
-                1.dp,
+                1.2.dp,
                 MaterialTheme.colorScheme.outlineVariant
             ),
             modifier = Modifier.fillMaxWidth()

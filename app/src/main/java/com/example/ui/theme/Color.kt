@@ -49,28 +49,32 @@ val PosRedOnContainerLight = Color(0xFF991B1B)
 val PosRedContainerDark = Color(0xFF7F1D1D)
 val PosRedOnContainerDark = Color(0xFFFECACA)
 
-// Clean Light Surfaces & Neutrals (Cards, Containers & Headers visibly darker than White Background)
-val PosBackground = Color(0xFFFFFFFF)
-val PosSurface = Color(0xFFEBF0F7)
-val PosSurfaceVariant = Color(0xFFDFE6F0)
-val PosSurfaceContainerLow = Color(0xFFF1F5FA)
-val PosSurfaceContainer = Color(0xFFEBF0F7)
-val PosSurfaceContainerHigh = Color(0xFFD9E2ED)
-val PosOutline = Color(0xFF64748B)
-val PosOutlineVariant = Color(0xFFCAD5E2)
-val PosTextPrimary = Color(0xFF0F172A)
-val PosTextSecondary = Color(0xFF334155)
-val PosTextTertiary = Color(0xFF64748B)
+// Clean Modern Light Surfaces & Neutrals (Crisp White Cards on Cool Slate Canvas, High-Contrast Text & Visible Borders)
+val PosBackground = Color(0xFFE9EEF5) // Soft cool slate canvas providing strong, immediate contrast with white cards
+val PosSurface = Color(0xFFFFFFFF)    // Crisp Pure White Cards & Sheets
+val PosSurfaceVariant = Color(0xFFDFE7F2) // Slate 200 - Distinct inner containers, chips, spec tables
+val PosSurfaceContainerLowest = Color(0xFFFFFFFF)
+val PosSurfaceContainerLow = Color(0xFFF3F6FA)
+val PosSurfaceContainer = Color(0xFFFFFFFF)
+val PosSurfaceContainerHigh = Color(0xFFE2EAF3)
+val PosSurfaceContainerHighest = Color(0xFFD3DFEC)
+val PosOutline = Color(0xFF64748B)       // Slate 500 - Strong border for inputs and active controls
+val PosOutlineVariant = Color(0xFFB4C4D8) // Slate 300 - Crisp, clearly defined container and card borders
+val PosTextPrimary = Color(0xFF0F172A)   // Slate 900 - High contrast readable text
+val PosTextSecondary = Color(0xFF334155) // Slate 700
+val PosTextTertiary = Color(0xFF64748B)  // Slate 500
 
-// Modern Deep Dark Surfaces & Neutrals
-val PosDarkBackground = Color(0xFF080C16)
-val PosDarkSurface = Color(0xFF131D2E)
-val PosDarkSurfaceVariant = Color(0xFF1E2B40)
-val PosDarkSurfaceContainerLow = Color(0xFF0D1422)
-val PosDarkSurfaceContainer = Color(0xFF162236)
-val PosDarkSurfaceContainerHigh = Color(0xFF22314A)
-val PosDarkOutline = Color(0xFF94A3B8)
-val PosDarkOutlineVariant = Color(0xFF2D3C52)
+// Modern Deep Dark Surfaces & Neutrals (Elevated Slate Cards, Midnight Canvas, Defined Borders)
+val PosDarkBackground = Color(0xFF080D18) // Midnight pitch canvas
+val PosDarkSurface = Color(0xFF182337)    // Elevated container card surface - distinct and prominent above background
+val PosDarkSurfaceVariant = Color(0xFF23324C) // Inner containers, spec boxes, secondary chips
+val PosDarkSurfaceContainerLowest = Color(0xFF080D18)
+val PosDarkSurfaceContainerLow = Color(0xFF10192A)
+val PosDarkSurfaceContainer = Color(0xFF182337)
+val PosDarkSurfaceContainerHigh = Color(0xFF23324C)
+val PosDarkSurfaceContainerHighest = Color(0xFF2C3E5E)
+val PosDarkOutline = Color(0xFF6B7F9E)
+val PosDarkOutlineVariant = Color(0xFF384D70) // Defined visible container borders in dark mode
 val PosDarkTextPrimary = Color(0xFFF8FAFC)
 val PosDarkTextSecondary = Color(0xFFCBD5E1)
 val PosDarkTextTertiary = Color(0xFF94A3B8)

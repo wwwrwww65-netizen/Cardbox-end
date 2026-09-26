@@ -117,9 +117,9 @@ fun ProfileScreen(
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface
                     ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
                     border = androidx.compose.foundation.BorderStroke(
-                        1.dp,
+                        1.3.dp,
                         MaterialTheme.colorScheme.outlineVariant
                     ),
                     modifier = Modifier.fillMaxWidth()
@@ -269,9 +269,9 @@ fun ProfileScreen(
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.surface
                         ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
                         border = androidx.compose.foundation.BorderStroke(
-                            1.dp,
+                            1.3.dp,
                             MaterialTheme.colorScheme.outlineVariant
                         ),
                         modifier = Modifier
@@ -305,9 +305,9 @@ fun ProfileScreen(
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.surface
                         ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
                         border = androidx.compose.foundation.BorderStroke(
-                            1.dp,
+                            1.3.dp,
                             MaterialTheme.colorScheme.outlineVariant
                         ),
                         modifier = Modifier
@@ -356,9 +356,9 @@ fun ProfileScreen(
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface
                     ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
                     border = androidx.compose.foundation.BorderStroke(
-                        1.dp,
+                        1.3.dp,
                         MaterialTheme.colorScheme.outlineVariant
                     ),
                     modifier = Modifier
@@ -436,9 +436,9 @@ fun ProfileScreen(
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface
                     ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
                     border = androidx.compose.foundation.BorderStroke(
-                        1.dp,
+                        1.3.dp,
                         MaterialTheme.colorScheme.outlineVariant
                     ),
                     modifier = Modifier.fillMaxWidth()

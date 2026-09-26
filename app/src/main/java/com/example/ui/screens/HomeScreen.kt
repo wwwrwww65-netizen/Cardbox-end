@@ -918,8 +918,8 @@ fun QuickActionButton(
     Surface(
         shape = RoundedCornerShape(18.dp),
         color = backgroundColor,
-        border = androidx.compose.foundation.BorderStroke(1.dp, borderColor),
-        shadowElevation = 2.dp,
+        border = androidx.compose.foundation.BorderStroke(1.3.dp, borderColor),
+        shadowElevation = 3.dp,
         modifier = modifier
             .clip(RoundedCornerShape(18.dp))
             .clickable { onClick() }
@@ -931,7 +931,7 @@ fun QuickActionButton(
         ) {
             Surface(
                 shape = RoundedCornerShape(12.dp),
-                color = iconColor.copy(alpha = 0.12f),
+                color = iconColor.copy(alpha = 0.14f),
                 modifier = Modifier.size(40.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
@@ -974,18 +974,18 @@ fun NetworkGridCardItem(
 
     val cardBorderColor = when {
         isEditMode && isSelected -> MaterialTheme.colorScheme.primary
-        isPinned -> Color(0xFFF59E0B)
+        isPinned -> PosAmberWarning
         else -> MaterialTheme.colorScheme.outlineVariant
     }
 
     val cardElevation = when {
-        isEditMode && isSelected -> 6.dp
-        isPinned -> 4.dp
-        else -> 2.dp
+        isEditMode && isSelected -> 8.dp
+        isPinned -> 5.dp
+        else -> 3.dp
     }
 
     val cardContainerColor = when {
-        isEditMode && isSelected -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.22f)
+        isEditMode && isSelected -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.40f)
         else -> MaterialTheme.colorScheme.surface
     }
 
@@ -993,7 +993,7 @@ fun NetworkGridCardItem(
         shape = RoundedCornerShape(22.dp),
         color = cardContainerColor,
         border = androidx.compose.foundation.BorderStroke(
-            if (isEditMode && isSelected) 2.dp else if (isPinned) 1.5.dp else 1.dp,
+            if (isEditMode && isSelected) 2.5.dp else if (isPinned) 2.dp else 1.4.dp,
             cardBorderColor
         ),
         shadowElevation = cardElevation,
