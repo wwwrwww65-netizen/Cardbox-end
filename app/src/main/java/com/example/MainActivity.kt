@@ -274,6 +274,9 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onTogglePinNetwork = { id -> viewModel.togglePinNetwork(id) },
                                     onMoveNetworkOrder = { id, moveUp -> viewModel.moveNetworkOrder(id, moveUp) },
+                                    onMoveNetworksBatch = { ids, moveUp -> viewModel.moveNetworksBatch(ids, moveUp) },
+                                    onRemoveNetworksFromHome = { ids -> viewModel.removeNetworksFromHome(ids) },
+                                    onPinNetworksBatch = { ids, pin -> viewModel.pinNetworksBatch(ids, pin) },
                                     onLogout = {
                                         viewModel.logout()
                                         navController.navigate(Routes.AUTH) {

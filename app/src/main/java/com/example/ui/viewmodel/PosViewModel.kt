@@ -75,28 +75,88 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
 
     fun fetchMyNetworks() {
         viewModelScope.launch {
-            repository.fetchMyNetworks()
+            repository.fetchMyNetworks(_hiddenFromHomeNetworkIds.value)
         }
     }
 
-    private val _pinnedNetworkIds = MutableStateFlow<Set<String>>(emptySet())
+    private val _pinnedNetworkIds = MutableStateFlow<Set<String>>(
+        prefs.getStringSet("pinned_network_ids", emptySet()) ?: emptySet()
+    )
     val pinnedNetworkIds: StateFlow<Set<String>> = _pinnedNetworkIds.asStateFlow()
 
-    private val _networkCustomOrder = MutableStateFlow<List<String>>(emptyList())
+    private val _networkCustomOrder = MutableStateFlow<List<String>>(
+        prefs.getString("network_custom_order", "")?.split(",")?.filter { it.isNotBlank() } ?: emptyList()
+    )
     val networkCustomOrder: StateFlow<List<String>> = _networkCustomOrder.asStateFlow()
+
+    private val _hiddenFromHomeNetworkIds = MutableStateFlow<Set<String>>(
+        prefs.getStringSet("hidden_from_home_network_ids", emptySet()) ?: emptySet()
+    )
+    val hiddenFromHomeNetworkIds: StateFlow<Set<String>> = _hiddenFromHomeNetworkIds.asStateFlow()
+
+    private data class NetworkDisplayPrefs(
+        val pinnedIds: Set<String>,
+        val customOrder: List<String>,
+        val hiddenIds: Set<String>
+    )
+
+    private val _displayPrefs: Flow<NetworkDisplayPrefs> = combine(
+        _pinnedNetworkIds,
+        _networkCustomOrder,
+        _hiddenFromHomeNetworkIds
+    ) { pinned, order, hidden ->
+        NetworkDisplayPrefs(pinned, order, hidden)
+    }
 
     val sortedJoinedNetworks: StateFlow<List<NetworkItem>> = combine(
         repository.joinedNetworks,
-        _pinnedNetworkIds,
-        _networkCustomOrder
-    ) { joinedList, pinnedSet, customOrder ->
-        val joinedApproved = joinedList.filter { it.status == JoinStatus.APPROVED }
+        repository.orderHistory,
+        _publicNetworks,
+        _displayPrefs
+    ) { joinedList, orders, pubList, displayPrefs ->
+        // Start with networks in joinedList (preserving their genuine status) excluding hidden ones
+        val homeNetworks = joinedList.filter { !displayPrefs.hiddenIds.contains(it.id) }.toMutableList()
 
-        // Deduplicate strictly by ID and Code to ensure absolutely no duplicates
+        // Auto-include any networks where orders were made, preserving their actual status (NOT_JOINED / PENDING / APPROVED)
+        val pubMapById = pubList.associateBy { it.id }
+        val pubMapByCode = pubList.filter { it.code.isNotBlank() }.associateBy { it.code.trim().uppercase() }
+        val pubMapByName = pubList.associateBy { it.name.trim().lowercase() }
+
+        orders.forEach { order ->
+            if (!displayPrefs.hiddenIds.contains(order.networkId)) {
+                val alreadyPresent = homeNetworks.any {
+                    it.id == order.networkId ||
+                    (it.name.isNotBlank() && it.name.trim().equals(order.networkName.trim(), ignoreCase = true))
+                }
+                if (!alreadyPresent) {
+                    val fromPub = pubMapById[order.networkId]
+                        ?: pubMapByCode[order.networkId.trim().uppercase()]
+                        ?: pubMapByName[order.networkName.trim().lowercase()]
+
+                    val netToAdd = fromPub ?: NetworkItem(
+                        id = order.networkId,
+                        code = "NET-${order.networkId.takeLast(4)}",
+                        name = order.networkName,
+                        ownerName = "مالك الشبكة",
+                        financialCeiling = 0.0,
+                        currentBalance = 0.0,
+                        currency = "ريال",
+                        status = JoinStatus.NOT_JOINED,
+                        location = "المنطقة المركزية",
+                        packagesCount = 4
+                    )
+                    homeNetworks.add(netToAdd)
+                }
+            }
+        }
+
+        // Deduplicate strictly by ID, Code, and Name to ensure absolutely no duplicates
         val uniqueMap = linkedMapOf<String, NetworkItem>()
-        joinedApproved.forEach { net ->
+        homeNetworks.forEach { net ->
             val existing = uniqueMap.values.find { 
-                it.id == net.id || (it.code.isNotBlank() && it.code.equals(net.code, ignoreCase = true))
+                it.id == net.id || 
+                (it.code.isNotBlank() && it.code.equals(net.code, ignoreCase = true)) ||
+                (it.name.isNotBlank() && it.name.trim().equals(net.name.trim(), ignoreCase = true))
             }
             if (existing == null) {
                 uniqueMap[net.id] = net
@@ -104,11 +164,11 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         uniqueMap.values.map { net ->
-            net.copy(isPinned = pinnedSet.contains(net.id))
+            net.copy(isPinned = displayPrefs.pinnedIds.contains(net.id))
         }.sortedWith(
             compareByDescending<NetworkItem> { it.isPinned }
                 .thenBy { net ->
-                    val idx = customOrder.indexOf(net.id)
+                    val idx = displayPrefs.customOrder.indexOf(net.id)
                     if (idx != -1) idx else Int.MAX_VALUE
                 }
                 .thenBy { it.name }
@@ -184,6 +244,7 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
                 setToast("تم تثبيت الشبكة في الأعلى")
             }
             _pinnedNetworkIds.value = current
+            prefs.edit().putStringSet("pinned_network_ids", current).apply()
         }
     }
 
@@ -196,8 +257,87 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
                 val item = currentList.removeAt(index)
                 currentList.add(targetIndex, item)
                 _networkCustomOrder.value = currentList
+                prefs.edit().putString("network_custom_order", currentList.joinToString(",")).apply()
                 setToast("تم تعديل ترتيب الشبكة")
             }
+        }
+    }
+
+    fun moveNetworksBatch(networkIds: Set<String>, moveUp: Boolean) {
+        if (networkIds.isEmpty()) return
+        val currentList = sortedJoinedNetworks.value.map { it.id }.toMutableList()
+        val sortedIndices = networkIds.mapNotNull { id ->
+            val idx = currentList.indexOf(id)
+            if (idx != -1) idx to id else null
+        }.sortedBy { if (moveUp) it.first else -it.first }
+
+        var changed = false
+        for ((_, id) in sortedIndices) {
+            val currentIndex = currentList.indexOf(id)
+            val targetIndex = if (moveUp) currentIndex - 1 else currentIndex + 1
+            if (targetIndex in 0 until currentList.size && !networkIds.contains(currentList[targetIndex])) {
+                val item = currentList.removeAt(currentIndex)
+                currentList.add(targetIndex, item)
+                changed = true
+            }
+        }
+        if (changed) {
+            _networkCustomOrder.value = currentList
+            prefs.edit().putString("network_custom_order", currentList.joinToString(",")).apply()
+            val msg = if (moveUp) "تم تقديم ترتيب الشبكات المحددة" else "تم تأخير ترتيب الشبكات المحددة"
+            setToast(msg)
+        }
+    }
+
+    fun removeNetworksFromHome(networkIds: Set<String>) {
+        if (networkIds.isEmpty()) return
+        viewModelScope.launch {
+            val updated = _hiddenFromHomeNetworkIds.value.toMutableSet()
+            updated.addAll(networkIds)
+            _hiddenFromHomeNetworkIds.value = updated
+            prefs.edit().putStringSet("hidden_from_home_network_ids", updated).apply()
+
+            // Also unpin if pinned
+            val pinned = _pinnedNetworkIds.value.toMutableSet()
+            pinned.removeAll(networkIds)
+            _pinnedNetworkIds.value = pinned
+            prefs.edit().putStringSet("pinned_network_ids", pinned).apply()
+
+            // Also remove from custom order
+            val customOrder = _networkCustomOrder.value.toMutableList()
+            customOrder.removeAll(networkIds)
+            _networkCustomOrder.value = customOrder
+            prefs.edit().putString("network_custom_order", customOrder.joinToString(",")).apply()
+
+            repository.removeNetworksFromHome(networkIds)
+            val count = networkIds.size
+            setToast("تمت إزالة $count ${if (count == 1) "شبكة" else "شبكات"} من الصفحة الرئيسية بنجاح")
+        }
+    }
+
+    fun restoreNetworkToHome(networkId: String) {
+        viewModelScope.launch {
+            val updated = _hiddenFromHomeNetworkIds.value.toMutableSet()
+            if (updated.remove(networkId)) {
+                _hiddenFromHomeNetworkIds.value = updated
+                prefs.edit().putStringSet("hidden_from_home_network_ids", updated).apply()
+                fetchMyNetworks()
+            }
+        }
+    }
+
+    fun pinNetworksBatch(networkIds: Set<String>, pin: Boolean) {
+        viewModelScope.launch {
+            val current = _pinnedNetworkIds.value.toMutableSet()
+            if (pin) {
+                current.addAll(networkIds)
+                setToast("تم تثبيت ${networkIds.size} شبكة في الصدارة")
+            } else {
+                current.removeAll(networkIds)
+                setToast("تم إلغاء تثبيت الشبكات المحددة")
+            }
+            _pinnedNetworkIds.value = current
+            prefs.edit().putStringSet("pinned_network_ids", current).apply()
         }
     }
 
@@ -616,11 +756,8 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
             if (res.success && res.data != null) {
                 _latestOrder.value = res.data
                 _showReceiptModal.value = true
-                
-                // Update selected network balance locally from the latest fetch inside repository.purchaseVouchers
-                // But for now, just fallback refresh:
+                _fallbackSelectedNetwork.value = net
                 fetchMyNetworks()
-                
                 _selectedQuantities.value = emptyMap()
                 setToast(res.message)
             } else {

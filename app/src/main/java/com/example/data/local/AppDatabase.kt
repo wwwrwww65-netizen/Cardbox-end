@@ -53,6 +53,12 @@ interface JoinedNetworkDao {
 
     @Query("UPDATE joined_networks SET currentBalance = :newBalance WHERE id = :networkId")
     suspend fun updateBalance(networkId: String, newBalance: Double)
+
+    @Query("DELETE FROM joined_networks WHERE id = :id")
+    suspend fun deleteNetworkById(id: String)
+
+    @Query("DELETE FROM joined_networks WHERE id IN (:ids)")
+    suspend fun deleteNetworksByIds(ids: List<String>)
 }
 
 @Dao

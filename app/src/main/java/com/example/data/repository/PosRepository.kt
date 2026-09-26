@@ -529,30 +529,48 @@ class PosRepository(
         }
     }
 
-    suspend fun fetchMyNetworks(): ApiResponse<List<NetworkItem>> = withContext(Dispatchers.IO) {
+    suspend fun fetchMyNetworks(hiddenIds: Set<String> = emptySet()): ApiResponse<List<NetworkItem>> = withContext(Dispatchers.IO) {
         val res = apiService.fetchMyNetworks()
         if (res.success) {
-            db.joinedNetworkDao().clearAll()
-            val networks = res.data ?: emptyList()
-            if (networks.isNotEmpty()) {
-                val entities = networks.map { net ->
-                    JoinedNetworkEntity(
-                        id = net.id,
-                        code = net.code,
-                        name = net.name,
-                        ownerName = net.ownerName,
-                        financialCeiling = net.financialCeiling,
-                        currentBalance = net.currentBalance,
-                        currency = net.currency,
-                        status = net.status.name,
-                        location = net.location,
-                        packagesCount = net.packagesCount
-                    )
-                }
-                db.joinedNetworkDao().insertAll(entities)
+            val serverNetworks = res.data ?: emptyList()
+            val currentLocal = db.joinedNetworkDao().getAllNetworksList()
+            val orders = db.orderDao().getOrdersListSync()
+            val purchasedNetworkIds = orders.map { it.networkId }.toSet()
+            val purchasedNetworkNames = orders.map { it.networkName.trim().lowercase() }.toSet()
+
+            val serverEntities = serverNetworks.filter { !hiddenIds.contains(it.id) }.map { net ->
+                JoinedNetworkEntity(
+                    id = net.id,
+                    code = net.code,
+                    name = net.name,
+                    ownerName = net.ownerName,
+                    financialCeiling = net.financialCeiling,
+                    currentBalance = net.currentBalance,
+                    currency = net.currency,
+                    status = net.status.name,
+                    location = net.location,
+                    packagesCount = net.packagesCount
+                )
             }
+            val serverIds = serverEntities.map { it.id }.toSet()
+
+            // Retain any networks that were purchased from or marked approved locally, but are not in server response and not hidden
+            val localToKeep = currentLocal.filter { localNet ->
+                !serverIds.contains(localNet.id) && !hiddenIds.contains(localNet.id) && (
+                    purchasedNetworkIds.contains(localNet.id) || 
+                    purchasedNetworkNames.contains(localNet.name.trim().lowercase()) ||
+                    localNet.status == JoinStatus.APPROVED.name
+                )
+            }
+
+            db.joinedNetworkDao().clearAll()
+            db.joinedNetworkDao().insertAll(serverEntities + localToKeep)
         }
         res
+    }
+
+    suspend fun removeNetworksFromHome(ids: Set<String>) = withContext(Dispatchers.IO) {
+        db.joinedNetworkDao().deleteNetworksByIds(ids.toList())
     }
 
     suspend fun registerAccount(
@@ -924,8 +942,21 @@ class PosRepository(
         }
 
         val result: PurchaseResult = res.data
-        // Update Room local balance for this network
-        db.joinedNetworkDao().updateBalance(network.id, result.newBalance)
+        // Update Room local balance for this network and preserve its true status
+        val existingNet = db.joinedNetworkDao().getNetworkById(network.id)
+        val entityToSave = JoinedNetworkEntity(
+            id = network.id,
+            code = network.code,
+            name = network.name,
+            ownerName = network.ownerName,
+            financialCeiling = existingNet?.financialCeiling ?: network.financialCeiling,
+            currentBalance = result.newBalance,
+            currency = network.currency,
+            status = existingNet?.status ?: network.status.name,
+            location = network.location,
+            packagesCount = network.packagesCount
+        )
+        db.joinedNetworkDao().insertOrUpdateNetwork(entityToSave)
 
         val costPrice = packageItem.posPrice
         val totalCost = costPrice * quantity
@@ -1160,24 +1191,21 @@ class PosRepository(
             )
         )
 
-        // Ensure the network appears in My Networks locally (even if not formally joined)
+        // Ensure the network appears in My Networks locally while preserving its true status
         val existingNet = db.joinedNetworkDao().getNetworkById(network.id)
-        if (existingNet == null) {
-            db.joinedNetworkDao().insertOrUpdateNetwork(
-                com.example.data.local.JoinedNetworkEntity(
-                    id = network.id,
-                    code = network.code,
-                    name = network.name,
-                    ownerName = network.ownerName,
-                    financialCeiling = network.financialCeiling,
-                    currentBalance = network.currentBalance,
-                    currency = network.currency,
-                    status = network.status.name,
-                    location = network.location,
-                    packagesCount = network.packagesCount
-                )
-            )
-        }
+        val entityToSave = JoinedNetworkEntity(
+            id = network.id,
+            code = network.code,
+            name = network.name,
+            ownerName = network.ownerName,
+            financialCeiling = existingNet?.financialCeiling ?: network.financialCeiling,
+            currentBalance = existingNet?.currentBalance ?: network.currentBalance,
+            currency = network.currency,
+            status = existingNet?.status ?: network.status.name,
+            location = network.location,
+            packagesCount = network.packagesCount
+        )
+        db.joinedNetworkDao().insertOrUpdateNetwork(entityToSave)
 
         // Trigger background sync with server to ensure wallet, sales, and networks are 100% up-to-date
         try {
