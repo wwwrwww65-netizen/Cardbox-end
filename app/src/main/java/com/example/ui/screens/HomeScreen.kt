@@ -437,29 +437,24 @@ fun HomeScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             if (joinedNetworks.isNotEmpty()) {
-                                FilledTonalButton(
+                                IconButton(
                                     onClick = {
                                         isEditMode = true
                                         selectedNetworkIds.clear()
                                     },
-                                    shape = RoundedCornerShape(12.dp),
-                                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                                    colors = ButtonDefaults.filledTonalButtonColors(
-                                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f),
-                                        contentColor = MaterialTheme.colorScheme.primary
-                                    ),
-                                    modifier = Modifier.testTag("btn_edit_networks_mode")
+                                    modifier = Modifier
+                                        .size(36.dp)
+                                        .background(
+                                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f),
+                                            RoundedCornerShape(10.dp)
+                                        )
+                                        .testTag("btn_edit_networks_mode")
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Edit,
                                         contentDescription = "تحرير وترتيب الشبكات",
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(5.dp))
-                                    Text(
-                                        text = "تحرير",
-                                        fontSize = 12.5.sp,
-                                        fontWeight = FontWeight.Bold
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(18.dp)
                                     )
                                 }
                             }
@@ -1110,30 +1105,22 @@ fun NetworkGridCardItem(
                         }
                     }
                 } else {
-                    // Normal Mode: Pin Badge if pinned, or clean space
+                    // Normal Mode: Pin Icon if pinned, or clean space
                     if (isPinned) {
                         Surface(
-                            shape = RoundedCornerShape(50),
+                            shape = CircleShape,
                             color = Color(0xFFFEF3C7),
                             border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFF59E0B)),
-                            modifier = Modifier.testTag("pin_badge_${network.id}")
+                            modifier = Modifier
+                                .size(26.dp)
+                                .testTag("pin_badge_${network.id}")
                         ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
+                            Box(contentAlignment = Alignment.Center) {
                                 Icon(
                                     imageVector = Icons.Outlined.PushPin,
-                                    contentDescription = null,
+                                    contentDescription = "شبكة مثبتة بالصدارة",
                                     tint = Color(0xFFB45309),
-                                    modifier = Modifier.size(12.dp)
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    text = "مثبتة بالصدارة",
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFFB45309)
+                                    modifier = Modifier.size(14.dp)
                                 )
                             }
                         }

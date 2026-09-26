@@ -75,7 +75,7 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
 
     fun fetchMyNetworks() {
         viewModelScope.launch {
-            repository.fetchMyNetworks(_hiddenFromHomeNetworkIds.value)
+            repository.fetchMyNetworks()
         }
     }
 
@@ -237,11 +237,13 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
                 setToast("تم إلغاء تثبيت الشبكة")
             } else {
                 current.add(networkId)
+                // If pinned, also restore to home if previously hidden
+                restoreNetworkToHome(networkId)
                 val searched = _searchedNetwork.value
                 if (searched != null && searched.id == networkId) {
                     repository.trackNetworkInDb(searched)
                 }
-                setToast("تم تثبيت الشبكة في الأعلى")
+                setToast("تم تثبيت الشبكة في الأعلى وإضافتها للرئيسية")
             }
             _pinnedNetworkIds.value = current
             prefs.edit().putStringSet("pinned_network_ids", current).apply()
@@ -309,7 +311,8 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
             _networkCustomOrder.value = customOrder
             prefs.edit().putString("network_custom_order", customOrder.joinToString(",")).apply()
 
-            repository.removeNetworksFromHome(networkIds)
+            // Hiding from home is a presentation preference. The network and its join request (PENDING/APPROVED)
+            // remain intact in the local DB so they appear correctly in the Networks screen.
             val count = networkIds.size
             setToast("تمت إزالة $count ${if (count == 1) "شبكة" else "شبكات"} من الصفحة الرئيسية بنجاح")
         }
@@ -612,6 +615,9 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
         val storePhone = user?.phone ?: ""
 
         viewModelScope.launch {
+            // Restore to home screen so it is visible in "شبكاتي"
+            restoreNetworkToHome(network.id)
+
             val res = repository.requestJoinNetwork(network, storeName, storePhone)
             val msg = res.message.orEmpty()
 
@@ -667,10 +673,11 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
 
     fun selectNetworkForStore(network: NetworkItem) {
         _selectedNetworkId.value = network.id
-        val joinedNet = sortedJoinedNetworks.value.find { 
+        val joinedNet = joinedNetworks.value.find { 
             it.id == network.id || (it.code.isNotBlank() && it.code.equals(network.code, ignoreCase = true))
         }
-        _fallbackSelectedNetwork.value = joinedNet ?: network
+        val fromAll = allNetworks.value.find { it.id == network.id }
+        _fallbackSelectedNetwork.value = joinedNet ?: fromAll ?: network
         _selectedQuantities.value = emptyMap()
         _customerPhone.value = ""
         fetchPackagesForNetwork(network.id)

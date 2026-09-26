@@ -538,7 +538,8 @@ class PosRepository(
             val purchasedNetworkIds = orders.map { it.networkId }.toSet()
             val purchasedNetworkNames = orders.map { it.networkName.trim().lowercase() }.toSet()
 
-            val serverEntities = serverNetworks.filter { !hiddenIds.contains(it.id) }.map { net ->
+            // Save all server networks into DB without filtering by hiddenIds
+            val serverEntities = serverNetworks.map { net ->
                 JoinedNetworkEntity(
                     id = net.id,
                     code = net.code,
@@ -554,12 +555,13 @@ class PosRepository(
             }
             val serverIds = serverEntities.map { it.id }.toSet()
 
-            // Retain any networks that were purchased from or marked approved locally, but are not in server response and not hidden
+            // Retain any networks that were purchased from or marked approved/pending locally, but are not in server response
             val localToKeep = currentLocal.filter { localNet ->
-                !serverIds.contains(localNet.id) && !hiddenIds.contains(localNet.id) && (
+                !serverIds.contains(localNet.id) && (
                     purchasedNetworkIds.contains(localNet.id) || 
                     purchasedNetworkNames.contains(localNet.name.trim().lowercase()) ||
-                    localNet.status == JoinStatus.APPROVED.name
+                    localNet.status == JoinStatus.APPROVED.name ||
+                    localNet.status == JoinStatus.PENDING.name
                 )
             }
 
@@ -570,7 +572,9 @@ class PosRepository(
     }
 
     suspend fun removeNetworksFromHome(ids: Set<String>) = withContext(Dispatchers.IO) {
-        db.joinedNetworkDao().deleteNetworksByIds(ids.toList())
+        // Hiding networks from the home screen is purely a display preference (managed via hiddenFromHomeNetworkIds in PosViewModel).
+        // We do NOT delete the network or its join request status from db.joinedNetworkDao(),
+        // so that the join status (e.g. PENDING or APPROVED) is preserved when viewing Networks.
     }
 
     suspend fun registerAccount(
@@ -831,8 +835,16 @@ class PosRepository(
                 )
             }
             if (entities.isNotEmpty()) {
+                val currentLocal = db.joinedNetworkDao().getAllNetworksList()
+                val serverIds = entities.map { it.id }.toSet()
+                val localToKeep = currentLocal.filter { localNet ->
+                    !serverIds.contains(localNet.id) && (
+                        localNet.status == JoinStatus.PENDING.name ||
+                        localNet.status == JoinStatus.APPROVED.name
+                    )
+                }
                 db.joinedNetworkDao().clearAll()
-                db.joinedNetworkDao().insertAll(entities)
+                db.joinedNetworkDao().insertAll(entities + localToKeep)
             }
         }
         res
