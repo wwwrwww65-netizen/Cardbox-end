@@ -52,7 +52,7 @@ private val DarkColorScheme = darkColorScheme(
     surfaceContainerHigh = PosDarkSurfaceContainerHigh,
     surfaceContainerHighest = PosDarkSurfaceContainerHighest,
     
-    surfaceBright = Color(0xFF223049),
+    surfaceBright = Color(0xFF2E4268),
     surfaceDim = PosDarkBackground,
     
     outline = PosDarkOutline,

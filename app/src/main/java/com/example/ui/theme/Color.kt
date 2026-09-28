@@ -2,22 +2,22 @@ package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Vibrant 2026 Indigo / Violet Brand Palette
-val PosIndigoPrimary = Color(0xFF4F46E5)
-val PosIndigoPrimaryLight = Color(0xFF6366F1)
-val PosIndigoDark = Color(0xFF3730A3)
+// Vibrant 2026 Indigo / Violet Brand Palette (Crisp & Radiant in Dark Theme)
+val PosIndigoPrimary = Color(0xFF6366F1)       // Vibrant, readable Indigo 500
+val PosIndigoPrimaryLight = Color(0xFF818CF8)  // Bright glowing Indigo 400 (Ultra visible in Dark Mode)
+val PosIndigoDark = Color(0xFF4F46E5)          // Indigo 600
 val PosIndigoContainerLight = Color(0xFFEEF2FF)
 val PosIndigoOnContainerLight = Color(0xFF1E1B4B)
-val PosIndigoContainerDark = Color(0xFF312E81)
-val PosIndigoOnContainerDark = Color(0xFFE0E7FF)
+val PosIndigoContainerDark = Color(0xFF283256)   // Distinct, elevated container in Dark Theme
+val PosIndigoOnContainerDark = Color(0xFFEEF2FF)
 
-// Secondary Accent - Cyan / Sky
-val PosTealSecondary = Color(0xFF0284C7)
-val PosTealSecondaryLight = Color(0xFF38BDF8)
+// Secondary Accent - Cyan / Sky (High Contrast & Clear)
+val PosTealSecondary = Color(0xFF0EA5E9)       // Sky 500 - Bright and vivid
+val PosTealSecondaryLight = Color(0xFF38BDF8)  // Sky 400 - Crystal clear on dark backgrounds
 val PosTealContainerLight = Color(0xFFE0F2FE)
 val PosTealOnContainerLight = Color(0xFF0369A1)
-val PosTealContainerDark = Color(0xFF075985)
-val PosTealOnContainerDark = Color(0xFFBAE6FD)
+val PosTealContainerDark = Color(0xFF134E6F)    // Readable elevated cyan container
+val PosTealOnContainerDark = Color(0xFFE0F2FE)
 
 // Tertiary Accent - Violet
 val PosVioletTertiary = Color(0xFF7C3AED)

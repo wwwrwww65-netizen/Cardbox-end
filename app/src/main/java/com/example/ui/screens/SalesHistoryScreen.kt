@@ -408,12 +408,13 @@ fun SalesHistoryScreen(
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             // Network Credit Breakdown Box
+                            val netCreditColor = MaterialTheme.colorScheme.primary
                             Surface(
-                                color = PosIndigoPrimary.copy(alpha = 0.08f),
+                                color = netCreditColor.copy(alpha = 0.10f),
                                 shape = RoundedCornerShape(16.dp),
                                 border = androidx.compose.foundation.BorderStroke(
                                     1.dp,
-                                    PosIndigoPrimary.copy(alpha = 0.25f)
+                                    netCreditColor.copy(alpha = 0.30f)
                                 ),
                                 modifier = Modifier.weight(1f)
                             ) {
@@ -422,7 +423,7 @@ fun SalesHistoryScreen(
                                         Icon(
                                             imageVector = Icons.Outlined.Speed,
                                             contentDescription = null,
-                                            tint = PosIndigoPrimary,
+                                            tint = netCreditColor,
                                             modifier = Modifier.size(14.dp)
                                         )
                                         Spacer(modifier = Modifier.width(4.dp))
@@ -430,7 +431,7 @@ fun SalesHistoryScreen(
                                             text = "سقف الشبكة (آجل)",
                                             fontSize = 11.sp,
                                             fontWeight = FontWeight.Bold,
-                                            color = PosIndigoPrimary,
+                                            color = netCreditColor,
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis
                                         )
@@ -440,13 +441,13 @@ fun SalesHistoryScreen(
                                         text = "${networkCreditAmount.toInt()} ريال",
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.ExtraBold,
-                                        color = PosIndigoPrimary
+                                        color = netCreditColor
                                     )
                                     Text(
                                         text = "$networkCreditCount كرت",
                                         fontSize = 11.sp,
                                         fontWeight = FontWeight.Medium,
-                                        color = PosIndigoPrimary.copy(alpha = 0.8f)
+                                        color = netCreditColor.copy(alpha = 0.85f)
                                     )
                                 }
                             }
@@ -886,12 +887,13 @@ fun ModernOrderCardItem(
             }
 
             // Payment Source Tag / Pill
+            val primaryCreditColor = MaterialTheme.colorScheme.primary
             Surface(
-                color = if (isWalletPayment) PosEmeraldSuccess.copy(alpha = 0.12f) else PosIndigoPrimary.copy(alpha = 0.10f),
+                color = if (isWalletPayment) PosEmeraldSuccess.copy(alpha = 0.12f) else primaryCreditColor.copy(alpha = 0.12f),
                 shape = RoundedCornerShape(10.dp),
                 border = androidx.compose.foundation.BorderStroke(
                     1.dp,
-                    if (isWalletPayment) PosEmeraldSuccess.copy(alpha = 0.3f) else PosIndigoPrimary.copy(alpha = 0.25f)
+                    if (isWalletPayment) PosEmeraldSuccess.copy(alpha = 0.35f) else primaryCreditColor.copy(alpha = 0.35f)
                 ),
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -902,7 +904,7 @@ fun ModernOrderCardItem(
                     Icon(
                         imageVector = if (isWalletPayment) Icons.Outlined.AccountBalanceWallet else Icons.Outlined.Speed,
                         contentDescription = null,
-                        tint = if (isWalletPayment) PosEmeraldSuccess else PosIndigoPrimary,
+                        tint = if (isWalletPayment) PosEmeraldSuccess else primaryCreditColor,
                         modifier = Modifier.size(15.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
@@ -910,7 +912,7 @@ fun ModernOrderCardItem(
                         text = if (isWalletPayment) "طريقة الدفع: محفظة CardBox (خصم نقدي مباشر)" else "طريقة الدفع: سقف الشبكة المالي (خصم من رصيد الشبكة)",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        color = if (isWalletPayment) PosEmeraldSuccess else PosIndigoPrimary
+                        color = if (isWalletPayment) PosEmeraldSuccess else primaryCreditColor
                     )
                 }
             }

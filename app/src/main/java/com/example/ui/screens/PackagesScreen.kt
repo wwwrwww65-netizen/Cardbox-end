@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -967,96 +968,73 @@ fun PackageGridCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Bottom Action Bar - Active counter for seamless selection
-            if (quantity == 0) {
-                Surface(
-                    onClick = onIncrement,
-                    shape = RoundedCornerShape(14.dp),
-                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
-                    border = androidx.compose.foundation.BorderStroke(1.2.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.45f)),
-                    shadowElevation = 1.dp,
+            // Bottom Action Bar - Stepper (+ / -) always visible directly
+            Surface(
+                color = if (quantity > 0) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                shape = RoundedCornerShape(14.dp),
+                border = androidx.compose.foundation.BorderStroke(
+                    if (quantity > 0) 1.8.dp else 1.dp,
+                    if (quantity > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
+                ),
+                shadowElevation = if (quantity > 0) 2.dp else 0.dp,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .testTag("btn_buy_card_${packageItem.id}")
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
+                    // Decrement Button (-)
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 9.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
+                            .size(32.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(
+                                if (quantity > 0) MaterialTheme.colorScheme.surface 
+                                else MaterialTheme.colorScheme.surface.copy(alpha = 0.4f)
+                            )
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = if (quantity > 0) 1f else 0.5f), RoundedCornerShape(8.dp))
+                            .clickable(enabled = quantity > 0) { onDecrement() }
+                            .testTag("btn_dec_${packageItem.id}"),
+                        contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = Icons.Outlined.ShoppingCart,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
+                            imageVector = if (quantity == 1) Icons.Outlined.Delete else Icons.Outlined.Remove,
+                            contentDescription = "إنقاص",
+                            tint = if (quantity > 0) {
+                                if (quantity == 1) PosRedError else MaterialTheme.colorScheme.onSurface
+                            } else {
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+                            },
                             modifier = Modifier.size(16.dp)
                         )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = "شراء الكرت",
-                            fontSize = 13.5.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
                     }
-                }
-            } else {
-                Surface(
-                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
-                    shape = RoundedCornerShape(14.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.8.dp, MaterialTheme.colorScheme.primary),
-                    shadowElevation = 2.dp,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Row(
+
+                    Text(
+                        text = "$quantity",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = if (quantity > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    // Increment Button (+)
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 6.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                            .size(32.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(MaterialTheme.colorScheme.primary)
+                            .clickable { onIncrement() }
+                            .testTag("btn_inc_${packageItem.id}"),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(32.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(MaterialTheme.colorScheme.surface)
-                                .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(8.dp))
-                                .clickable { onDecrement() }
-                                .testTag("btn_dec_${packageItem.id}"),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = if (quantity == 1) Icons.Outlined.Delete else Icons.Outlined.Remove,
-                                contentDescription = "إنقاص",
-                                tint = if (quantity == 1) PosRedError else MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.size(16.dp)
-                            )
-                        }
-
-                        Text(
-                            text = "$quantity",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = MaterialTheme.colorScheme.primary
+                        Icon(
+                            imageVector = Icons.Outlined.Add,
+                            contentDescription = "زيادة",
+                            tint = Color.White,
+                            modifier = Modifier.size(18.dp)
                         )
-
-                        Box(
-                            modifier = Modifier
-                                .size(32.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(MaterialTheme.colorScheme.primary)
-                                .clickable { onIncrement() }
-                                .testTag("btn_inc_${packageItem.id}"),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Add,
-                                contentDescription = "زيادة",
-                                tint = Color.White,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        }
                     }
                 }
             }
@@ -1389,13 +1367,16 @@ fun CheckoutBottomSheet(
                 }
             }
 
-            // Customer Phone Number Section (Highly Distinct & Clear in both Dark & Light Themes)
+            // Customer Phone Number Section (Highly Distinct, Bright Neon & Luminous in Dark & Light Themes)
+            var isPhoneFocused by remember { mutableStateOf(false) }
+            val neonPrimary = MaterialTheme.colorScheme.primary
+            
             Surface(
                 shape = RoundedCornerShape(18.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f),
+                color = MaterialTheme.colorScheme.surfaceContainerHigh,
                 border = androidx.compose.foundation.BorderStroke(
-                    1.5.dp,
-                    if (customerPhone.isNotBlank()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
+                    if (isPhoneFocused || customerPhone.isNotBlank()) 1.6.dp else 1.2.dp,
+                    if (isPhoneFocused || customerPhone.isNotBlank()) neonPrimary else MaterialTheme.colorScheme.outlineVariant
                 ),
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -1414,14 +1395,14 @@ fun CheckoutBottomSheet(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Surface(
                                 shape = CircleShape,
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                                color = neonPrimary.copy(alpha = if (isPhoneFocused) 0.25f else 0.15f),
                                 modifier = Modifier.size(28.dp)
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
                                     Icon(
                                         imageVector = Icons.Outlined.Phone,
                                         contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary,
+                                        tint = neonPrimary,
                                         modifier = Modifier.size(16.dp)
                                     )
                                 }
@@ -1436,7 +1417,7 @@ fun CheckoutBottomSheet(
                             Spacer(modifier = Modifier.width(6.dp))
                             Surface(
                                 shape = RoundedCornerShape(6.dp),
-                                color = MaterialTheme.colorScheme.surfaceContainerHigh
+                                color = MaterialTheme.colorScheme.surfaceContainerHighest
                             ) {
                                 Text(
                                     text = "اختياري",
@@ -1450,10 +1431,10 @@ fun CheckoutBottomSheet(
 
                         Surface(
                             shape = RoundedCornerShape(50),
-                            color = if (customerPhone.isNotBlank()) PosEmeraldSuccess.copy(alpha = 0.15f) else MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                            color = if (customerPhone.isNotBlank()) PosEmeraldSuccess.copy(alpha = 0.15f) else neonPrimary.copy(alpha = 0.15f),
                             border = androidx.compose.foundation.BorderStroke(
                                 1.dp,
-                                if (customerPhone.isNotBlank()) PosEmeraldSuccess.copy(alpha = 0.4f) else MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)
+                                if (customerPhone.isNotBlank()) PosEmeraldSuccess.copy(alpha = 0.4f) else neonPrimary.copy(alpha = 0.35f)
                             )
                         ) {
                             Row(
@@ -1463,7 +1444,7 @@ fun CheckoutBottomSheet(
                                 Icon(
                                     imageVector = Icons.Outlined.Sms,
                                     contentDescription = null,
-                                    tint = if (customerPhone.isNotBlank()) PosEmeraldSuccess else MaterialTheme.colorScheme.primary,
+                                    tint = if (customerPhone.isNotBlank()) PosEmeraldSuccess else neonPrimary,
                                     modifier = Modifier.size(12.dp)
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
@@ -1471,28 +1452,28 @@ fun CheckoutBottomSheet(
                                     text = "إرسال الكرت SMS",
                                     fontSize = 10.5.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = if (customerPhone.isNotBlank()) PosEmeraldSuccess else MaterialTheme.colorScheme.primary
+                                    color = if (customerPhone.isNotBlank()) PosEmeraldSuccess else neonPrimary
                                 )
                             }
                         }
                     }
 
-                    // Clearly styled high-contrast text input field
+                    // Clearly styled high-contrast text input field with luminous neon glow when focused
                     OutlinedTextField(
                         value = customerPhone,
                         onValueChange = onCustomerPhoneChange,
                         placeholder = {
                             Text(
-                                text = "أدخل رقم هاتف العميل هنا (مثال: 771234567)",
+                                text = "أدخل رقم هاتف العميل هنا...",
                                 fontSize = 13.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f)
                             )
                         },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Outlined.Dialpad,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
+                                tint = if (isPhoneFocused) neonPrimary else neonPrimary.copy(alpha = 0.8f),
                                 modifier = Modifier.size(18.dp)
                             )
                         },
@@ -1514,16 +1495,17 @@ fun CheckoutBottomSheet(
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.surface,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                            focusedContainerColor = neonPrimary.copy(alpha = 0.18f),
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceBright,
+                            focusedBorderColor = neonPrimary,
+                            unfocusedBorderColor = neonPrimary.copy(alpha = 0.65f),
                             focusedTextColor = MaterialTheme.colorScheme.onSurface,
                             unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                            cursorColor = MaterialTheme.colorScheme.primary
+                            cursorColor = neonPrimary
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
+                            .onFocusChanged { isPhoneFocused = it.isFocused }
                             .testTag("input_customer_phone"),
                         shape = RoundedCornerShape(12.dp)
                     )
@@ -1533,7 +1515,7 @@ fun CheckoutBottomSheet(
                         Icon(
                             imageVector = Icons.Outlined.Bolt,
                             contentDescription = null,
-                            tint = if (customerPhone.isNotBlank()) PosEmeraldSuccess else MaterialTheme.colorScheme.primary,
+                            tint = if (customerPhone.isNotBlank()) PosEmeraldSuccess else neonPrimary,
                             modifier = Modifier.size(14.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
@@ -1577,8 +1559,6 @@ fun CheckoutBottomSheet(
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
 
             // Primary Confirmation Button
             Button(
