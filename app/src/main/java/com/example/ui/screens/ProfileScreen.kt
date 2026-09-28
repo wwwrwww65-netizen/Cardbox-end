@@ -716,7 +716,7 @@ fun ProfileScreen(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = "المطور جي كم للتسوق الإلكتروني",
+                        text = "المطور بصمة العصر الحديث",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,

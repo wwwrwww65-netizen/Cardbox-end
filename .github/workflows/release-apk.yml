@@ -15,7 +15,7 @@ jobs:
   build:
     name: Build Signed APK
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
 
     steps:
       - name: Checkout Repository
@@ -30,17 +30,8 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-
-      - name: Ensure dummy .env exists
-        run: |
-          if [ ! -f .env ]; then
-            touch .env
-          fi
 
       - name: Prepare Keystore File
         env:
@@ -49,18 +40,21 @@ jobs:
           if [ -n "$KEYSTORE_BASE64" ]; then
             echo "Decoding Keystore from GitHub Secrets..."
             echo "$KEYSTORE_BASE64" | base64 --decode > cardbox-release-key.jks
-          else
-            echo "Using existing repository Keystore file..."
+            cp cardbox-release-key.jks app/cardbox-release-key.jks 2>/dev/null || true
+          fi
+          if [ -f cardbox-release-key.jks ]; then
+            cp cardbox-release-key.jks app/cardbox-release-key.jks 2>/dev/null || true
+            echo "Keystore ready in root and app directory."
           fi
 
       - name: Build Release APK
         env:
-          KEYSTORE_PATH: cardbox-release-key.jks
+          KEYSTORE_PATH: ${{ github.workspace }}/cardbox-release-key.jks
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD || 'CardBoxPOS@2026' }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS || 'cardbox-pos-key' }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || 'CardBoxPOS@2026' }}
-          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4096m -Dorg.gradle.parallel=true -Dorg.gradle.caching=true"
-        run: ./gradlew assembleRelease -x lint -x lintVitalRelease -x test --no-daemon --stacktrace
+        run: |
+          ./gradlew assembleRelease --no-daemon --no-configuration-cache -x lint -x lintVitalRelease -x test --stacktrace
 
       - name: Upload Signed Release APK Artifact
         uses: actions/upload-artifact@v4

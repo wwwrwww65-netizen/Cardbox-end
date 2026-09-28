@@ -1,3 +1,5 @@
+import java.io.File
+
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
@@ -22,16 +24,24 @@ android {
 
   signingConfigs {
     create("debugConfig") {
-      storeFile = file("${rootDir}/debug.keystore")
+      storeFile = rootProject.file("debug.keystore")
       storePassword = "android"
       keyAlias = "androiddebugkey"
       keyPassword = "android"
     }
     create("release") {
-      val keystorePath = System.getenv("KEYSTORE_PATH") ?: "${rootDir}/cardbox-release-key.jks"
-      storeFile = file(keystorePath)
+      val envPath = System.getenv("KEYSTORE_PATH")
+      val keyFile = when {
+        !envPath.isNullOrBlank() && File(envPath).isAbsolute && File(envPath).exists() -> File(envPath)
+        !envPath.isNullOrBlank() && rootProject.file(envPath).exists() -> rootProject.file(envPath)
+        !envPath.isNullOrBlank() && file(envPath).exists() -> file(envPath)
+        rootProject.file("cardbox-release-key.jks").exists() -> rootProject.file("cardbox-release-key.jks")
+        file("cardbox-release-key.jks").exists() -> file("cardbox-release-key.jks")
+        else -> rootProject.file("debug.keystore")
+      }
+      storeFile = keyFile
       storePassword = System.getenv("STORE_PASSWORD") ?: "CardBoxPOS@2026"
-      keyAlias = "cardbox-pos-key"
+      keyAlias = System.getenv("KEY_ALIAS") ?: "cardbox-pos-key"
       keyPassword = System.getenv("KEY_PASSWORD") ?: "CardBoxPOS@2026"
     }
   }
