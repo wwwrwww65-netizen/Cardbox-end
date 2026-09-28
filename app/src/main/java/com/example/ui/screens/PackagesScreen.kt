@@ -1083,10 +1083,10 @@ fun CheckoutBottomSheet(
 ) {
     val isCeilingSufficient = availableBalance >= totalPrice
     val isWalletSufficient = walletBalance >= totalPrice
-    val isBalanceSufficient = isCeilingSufficient || isWalletSufficient || financialCeiling > 0
+    val isBalanceSufficient = isCeilingSufficient || isWalletSufficient
     val selectedEntries = selectedQuantities.filterValues { it > 0 }
     
-    val autoPaymentMethod = if (isCeilingSufficient || availableBalance >= totalPrice) "network_credit" else "wallet"
+    val autoPaymentMethod = if (isCeilingSufficient) "network_credit" else "wallet"
 
     Surface(
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
@@ -1378,7 +1378,7 @@ fun CheckoutBottomSheet(
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
-                                    text = "تنبيه: نظراً لأن الرصيد المنصرف المتاح من الشبكة (${availableBalance.toInt()} ريال) لا يغطي الكرت، فسيتم الدفع من المحفظة.",
+                                    text = "تنبيه: نظراً لأن الرصيد المتاح من سقف الشبكة (${availableBalance.toInt()} ريال) لا يغطي إجمالي الطلب (${totalPrice.toInt()} ريال)، فسيتم خصم كامل العملية (${totalPrice.toInt()} ريال) من رصيد المحفظة.",
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     color = MaterialTheme.colorScheme.onSurface

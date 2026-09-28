@@ -734,15 +734,11 @@ fun SalesHistoryScreen(
 @Composable
 fun ModernOrderCardItem(
     order: OrderTransaction,
-    onCopyCardCode: () -> Unit,
+    onCopyCardCode: () -> Unit = {},
     onReprint: () -> Unit
 ) {
     val dateFormat = remember { SimpleDateFormat("yyyy/MM/dd • hh:mm a", Locale("ar")) }
     val formattedDate = remember(order.timestamp) { dateFormat.format(Date(order.timestamp)) }
-    val cleanCardCode = remember(order.voucherPin) { 
-        val raw = order.voucherPin.replace("-", "").trim()
-        if (raw.isBlank() || raw.equals("null", ignoreCase = true)) "غير متوفر" else raw 
-    }
 
     val isWalletPayment = remember(order.paymentSource) {
         order.paymentSource.equals("WALLET", ignoreCase = true)
@@ -916,68 +912,6 @@ fun ModernOrderCardItem(
                         fontWeight = FontWeight.Bold,
                         color = if (isWalletPayment) PosEmeraldSuccess else PosIndigoPrimary
                     )
-                }
-            }
-
-            // Middle Box: Card Code (رمز الكرت) Container with Copy Button
-            Surface(
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.25f),
-                shape = RoundedCornerShape(16.dp),
-                border = androidx.compose.foundation.BorderStroke(
-                    1.dp,
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
-                ),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 14.dp, vertical = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "رمز الكرت",
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = cleanCardCode,
-                            fontFamily = FontFamily.Monospace,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.primary,
-                            letterSpacing = 1.sp,
-                            lineHeight = 24.sp
-                        )
-                    }
-                    
-                    Spacer(modifier = Modifier.width(12.dp))
-
-                    Button(
-                        onClick = onCopyCardCode,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = Color.White
-                        ),
-                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                        shape = RoundedCornerShape(10.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.ContentCopy,
-                            contentDescription = "نسخ رمز الكرت",
-                            modifier = Modifier.size(14.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = "نسخ",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
                 }
             }
 

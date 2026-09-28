@@ -745,6 +745,10 @@ class PosViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         val totalCost = pkg.posPrice * quantity
+        if (net.currentBalance < totalCost) {
+            processPurchaseViaWallet()
+            return
+        }
         val currentWallet = walletBalance.value
 
         val storeName = currentUser.value?.storeName ?: "نقطة بيع معتمدة"
