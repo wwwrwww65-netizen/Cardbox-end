@@ -111,35 +111,10 @@ fun SplashScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.9f),
-                        MaterialTheme.colorScheme.surface,
-                        MaterialTheme.colorScheme.background
-                    )
-                )
-            )
+            .background(MaterialTheme.colorScheme.background)
             .testTag("splash_screen_container"),
         contentAlignment = Alignment.Center
     ) {
-        // Decorative Ambient Glowing Orbs in Background (Adaptive & responsive)
-        Box(
-            modifier = Modifier
-                .size(280.dp)
-                .offset(x = (-90).dp, y = (-200).dp + orbTranslationY.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.18f))
-        )
-
-        Box(
-            modifier = Modifier
-                .size(320.dp)
-                .offset(x = (110).dp, y = (240).dp - orbTranslationY.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f))
-        )
-
         // Main Splash Content Hub with responsive max width constraint
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -150,76 +125,21 @@ fun SplashScreen(
                 .padding(horizontal = 24.dp)
                 .alpha(contentAlpha)
         ) {
-            // Animated Pulse Outer Ring & Logo Container
+            // Direct Clean Brand Logo (Prominent, no colored backgrounds or rings)
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(160.dp)
+                    .size(180.dp)
                     .scale(logoScale)
             ) {
-                // Outer Pulsing Glow Aura
-                Box(
-                    modifier = Modifier
-                        .size(150.dp)
-                        .scale(pulseScale)
-                        .clip(CircleShape)
-                        .background(
-                            Brush.radialGradient(
-                                listOf(
-                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-                                    Color.Transparent
-                                )
-                            )
-                        )
+                Image(
+                    painter = painterResource(id = R.drawable.ic_app_logo),
+                    contentDescription = "CardBox POS Logo",
+                    modifier = Modifier.fillMaxSize()
                 )
-
-                // Glassmorphism Middle Accent Ring
-                Box(
-                    modifier = Modifier
-                        .size(122.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f))
-                        .border(
-                            1.5.dp,
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
-                            CircleShape
-                        )
-                )
-
-                // Main Elevating Brand Icon Surface
-                Surface(
-                    modifier = Modifier
-                        .size(104.dp)
-                        .clip(CircleShape)
-                        .border(
-                            2.5.dp,
-                            Brush.linearGradient(
-                                listOf(
-                                    MaterialTheme.colorScheme.primary,
-                                    MaterialTheme.colorScheme.secondary
-                                )
-                            ),
-                            CircleShape
-                        ),
-                    color = MaterialTheme.colorScheme.surface,
-                    shadowElevation = 14.dp
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_app_logo),
-                            contentDescription = "CardBox POS Logo",
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(14.dp)
-                        )
-                    }
-                }
             }
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Animated Title Block with Offset Slide
             Column(
