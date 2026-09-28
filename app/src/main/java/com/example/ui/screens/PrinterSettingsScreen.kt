@@ -40,6 +40,8 @@ fun PrinterSettingsScreen(
     onSavePrinter: (PrinterDevice) -> Unit,
     onBack: () -> Unit
 ) {
+    androidx.activity.compose.BackHandler { onBack() }
+
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 

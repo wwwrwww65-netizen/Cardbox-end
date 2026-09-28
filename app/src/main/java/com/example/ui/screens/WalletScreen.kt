@@ -129,6 +129,8 @@ fun WalletScreen(
     onRefresh: () -> Unit = {},
     onBack: () -> Unit
 ) {
+    androidx.activity.compose.BackHandler { onBack() }
+
     val context = LocalContext.current
     var selectedFilter by remember { mutableStateOf("ALL") }
 

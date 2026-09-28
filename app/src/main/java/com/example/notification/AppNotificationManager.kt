@@ -95,14 +95,19 @@ object AppNotificationManager {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val iconRes = try {
-            R.drawable.ic_app_logo
+        val largeIconBitmap = try {
+            android.graphics.BitmapFactory.decodeResource(context.resources, R.drawable.ic_app_logo)
         } catch (e: Exception) {
-            R.mipmap.ic_launcher
+            null
         }
 
         val builder = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(iconRes)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .apply {
+                if (largeIconBitmap != null) {
+                    setLargeIcon(largeIconBitmap)
+                }
+            }
             .setContentTitle(title)
             .setContentText(message)
             .setStyle(NotificationCompat.BigTextStyle().bigText(message))

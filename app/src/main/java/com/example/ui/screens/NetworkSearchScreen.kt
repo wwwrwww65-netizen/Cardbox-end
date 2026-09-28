@@ -55,6 +55,8 @@ fun NetworkSearchScreen(
     onTogglePin: (String) -> Unit = {},
     onBack: () -> Unit
 ) {
+    androidx.activity.compose.BackHandler { onBack() }
+
     val matchedNetworks by remember(searchQuery, allNetworks, searchedNetwork, pinnedNetworkIds) {
         derivedStateOf {
             val q = searchQuery.trim()

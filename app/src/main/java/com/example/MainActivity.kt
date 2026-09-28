@@ -287,6 +287,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             // NOTIFICATIONS
+                            // NOTIFICATIONS
                             composable(Routes.NOTIFICATIONS) {
                                 NotificationsScreen(
                                     notifications = notifications,
@@ -297,7 +298,14 @@ class MainActivity : ComponentActivity() {
                                     onClearAll = { viewModel.clearAllNotifications() },
                                     onNavigateToWallet = { navController.navigate(Routes.WALLET) },
                                     onNavigateToNetworks = { navController.navigate(Routes.NETWORKS) },
-                                    onBack = { navController.popBackStack() }
+                                    onBack = {
+                                        if (!navController.popBackStack()) {
+                                            navController.navigate(Routes.HOME) {
+                                                popUpTo(Routes.HOME) { inclusive = false }
+                                                launchSingleTop = true
+                                            }
+                                        }
+                                    }
                                 )
                             }
 
@@ -315,7 +323,14 @@ class MainActivity : ComponentActivity() {
                                         navController.navigate(Routes.WALLET_TOPUP_SELECTION)
                                     },
                                     onRefresh = { viewModel.syncWalletData() },
-                                    onBack = { navController.popBackStack() }
+                                    onBack = {
+                                        if (!navController.popBackStack()) {
+                                            navController.navigate(Routes.HOME) {
+                                                popUpTo(Routes.HOME) { inclusive = false }
+                                                launchSingleTop = true
+                                            }
+                                        }
+                                    }
                                 )
                             }
 
@@ -326,7 +341,14 @@ class MainActivity : ComponentActivity() {
                                     onSelectWallet = { walletId ->
                                         navController.navigate("wallet_topup_form/$walletId")
                                     },
-                                    onBack = { navController.popBackStack() }
+                                    onBack = {
+                                        if (!navController.popBackStack()) {
+                                            navController.navigate(Routes.WALLET) {
+                                                popUpTo(Routes.HOME) { inclusive = false }
+                                                launchSingleTop = true
+                                            }
+                                        }
+                                    }
                                 )
                             }
 
@@ -344,7 +366,14 @@ class MainActivity : ComponentActivity() {
                                     onConfirmDeposit = { amount, refNum, walletName, callback ->
                                         viewModel.topUpWallet(amount, walletName, refNum, callback)
                                     },
-                                    onBack = { navController.popBackStack() },
+                                    onBack = {
+                                        if (!navController.popBackStack()) {
+                                            navController.navigate(Routes.WALLET_TOPUP_SELECTION) {
+                                                popUpTo(Routes.HOME) { inclusive = false }
+                                                launchSingleTop = true
+                                            }
+                                        }
+                                    },
                                     onDepositSuccess = {
                                         navController.popBackStack(Routes.WALLET, false)
                                     },
@@ -381,7 +410,14 @@ class MainActivity : ComponentActivity() {
                                         navController.navigate(Routes.PACKAGES)
                                     },
                                     onTogglePin = { id -> viewModel.togglePinNetwork(id) },
-                                    onBack = { navController.popBackStack() }
+                                    onBack = {
+                                        if (!navController.popBackStack()) {
+                                            navController.navigate(Routes.NETWORKS) {
+                                                popUpTo(Routes.HOME) { inclusive = false }
+                                                launchSingleTop = true
+                                            }
+                                        }
+                                    }
                                 )
                             }
 
@@ -416,8 +452,24 @@ class MainActivity : ComponentActivity() {
                                         },
                                         onRequestJoin = { targetNet -> viewModel.requestJoinNetwork(targetNet) },
                                         onNavigateToWallet = { navController.navigate(Routes.WALLET) },
-                                        onBack = { navController.popBackStack() }
+                                        onBack = {
+                                            if (!navController.popBackStack()) {
+                                                navController.navigate(Routes.HOME) {
+                                                    popUpTo(Routes.HOME) { inclusive = false }
+                                                    launchSingleTop = true
+                                                }
+                                            }
+                                        }
                                     )
+                                } else {
+                                    LaunchedEffect(Unit) {
+                                        if (!navController.popBackStack()) {
+                                            navController.navigate(Routes.HOME) {
+                                                popUpTo(Routes.HOME) { inclusive = false }
+                                                launchSingleTop = true
+                                            }
+                                        }
+                                    }
                                 }
                             }
 
@@ -428,7 +480,14 @@ class MainActivity : ComponentActivity() {
                                     currentPrinter = activePrinter,
                                     printerManager = viewModel.printerManager,
                                     onSavePrinter = { dev -> viewModel.saveSelectedPrinter(dev) },
-                                    onBack = { navController.popBackStack() }
+                                    onBack = {
+                                        if (!navController.popBackStack()) {
+                                            navController.navigate(Routes.HOME) {
+                                                popUpTo(Routes.HOME) { inclusive = false }
+                                                launchSingleTop = true
+                                            }
+                                        }
+                                    }
                                 )
                             }
 
@@ -441,7 +500,14 @@ class MainActivity : ComponentActivity() {
                                         viewModel.printCurrentOrderReceipt()
                                     },
                                     onRefresh = { viewModel.syncAllData() },
-                                    onBack = { navController.popBackStack() }
+                                    onBack = {
+                                        if (!navController.popBackStack()) {
+                                            navController.navigate(Routes.HOME) {
+                                                popUpTo(Routes.HOME) { inclusive = false }
+                                                launchSingleTop = true
+                                            }
+                                        }
+                                    }
                                 )
                             }
 
@@ -511,7 +577,14 @@ class MainActivity : ComponentActivity() {
                                             }
                                         }
                                     },
-                                    onBack = { navController.popBackStack() }
+                                    onBack = {
+                                        if (!navController.popBackStack()) {
+                                            navController.navigate(Routes.PROFILE) {
+                                                popUpTo(Routes.HOME) { inclusive = false }
+                                                launchSingleTop = true
+                                            }
+                                        }
+                                    }
                                 )
                             }
                         }

@@ -210,12 +210,12 @@ fun AuthScreen(
                 // Header Logo Banner
                 Surface(
                     modifier = Modifier
-                        .size(90.dp)
+                        .size(92.dp)
                         .clip(RoundedCornerShape(24.dp)),
                     color = MaterialTheme.colorScheme.surface,
                     border = BorderStroke(
                         1.dp,
-                        MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                        MaterialTheme.colorScheme.outlineVariant
                     ),
                     shadowElevation = 6.dp
                 ) {
@@ -223,7 +223,9 @@ fun AuthScreen(
                         Image(
                             painter = painterResource(id = R.drawable.ic_app_logo),
                             contentDescription = "Card Box POS Logo",
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(10.dp)
                         )
                     }
                 }

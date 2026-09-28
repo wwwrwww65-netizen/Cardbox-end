@@ -48,6 +48,8 @@ fun WalletTopUpSelectionScreen(
     onSelectWallet: (String) -> Unit,
     onBack: () -> Unit
 ) {
+    androidx.activity.compose.BackHandler { onBack() }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -289,6 +291,8 @@ fun WalletTopUpFormScreen(
     onDepositSuccess: () -> Unit,
     onShowMessage: ((String) -> Unit)? = null
 ) {
+    androidx.activity.compose.BackHandler { onBack() }
+
     val context = LocalContext.current
     val eWallet = remember(walletId, wallets) {
         wallets.find { it.id == walletId } ?: wallets.first()

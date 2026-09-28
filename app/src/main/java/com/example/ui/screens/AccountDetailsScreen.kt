@@ -66,6 +66,8 @@ fun AccountDetailsScreen(
     onDeleteAccount: ((Boolean, String) -> Unit) -> Unit,
     onBack: () -> Unit
 ) {
+    androidx.activity.compose.BackHandler { onBack() }
+
     val context = LocalContext.current
 
     // Form states

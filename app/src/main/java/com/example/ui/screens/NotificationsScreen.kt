@@ -53,6 +53,8 @@ fun NotificationsScreen(
     onNavigateToNetworks: () -> Unit,
     onBack: () -> Unit
 ) {
+    androidx.activity.compose.BackHandler { onBack() }
+
     val context = LocalContext.current
     var selectedCategory by remember { mutableStateOf(NotificationCategory.ALL) }
     var showPermissionBanner by remember {

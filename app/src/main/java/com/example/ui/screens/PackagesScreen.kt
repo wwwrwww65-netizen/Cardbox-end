@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.activity.compose.BackHandler
 import com.example.data.model.JoinStatus
 import com.example.data.model.NetworkItem
 import com.example.data.model.OrderTransaction
@@ -71,8 +72,16 @@ fun PackagesScreen(
     val selectedEntries = selectedQuantities.filterValues { it > 0 }
     val totalQuantity = selectedEntries.values.sum()
 
-    // State for controlling the checkout modal bottom sheet
-    var isCheckoutSheetOpen by rememberSaveable { mutableStateOf(false) }
+    // State for controlling the checkout modal bottom sheet (always starts closed)
+    var isCheckoutSheetOpen by remember { mutableStateOf(false) }
+
+    BackHandler {
+        if (isCheckoutSheetOpen) {
+            isCheckoutSheetOpen = false
+        } else {
+            onBack()
+        }
+    }
 
     LaunchedEffect(totalQuantity) {
         if (totalQuantity == 0) {
@@ -441,7 +450,6 @@ fun PackagesScreen(
                             quantity = qty,
                             onIncrement = {
                                 onQuantityChange(pkg.id, qty + 1)
-                                isCheckoutSheetOpen = true
                             },
                             onDecrement = {
                                 val newQty = (qty - 1).coerceAtLeast(0)
@@ -451,7 +459,6 @@ fun PackagesScreen(
                                 if (qty == 0) {
                                     onQuantityChange(pkg.id, 1)
                                 }
-                                isCheckoutSheetOpen = true
                             }
                         )
                     }

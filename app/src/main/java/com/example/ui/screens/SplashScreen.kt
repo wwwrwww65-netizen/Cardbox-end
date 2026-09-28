@@ -212,8 +212,8 @@ fun SplashScreen(
                             painter = painterResource(id = R.drawable.ic_app_logo),
                             contentDescription = "CardBox POS Logo",
                             modifier = Modifier
-                                .size(64.dp)
-                                .clip(CircleShape)
+                                .fillMaxSize()
+                                .padding(14.dp)
                         )
                     }
                 }
